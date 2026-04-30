@@ -1,0 +1,4 @@
+package com.ticketti.ms_donaciones.repository;
+
+public class RepresentanteRepository {
+}
