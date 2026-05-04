@@ -1,4 +1,12 @@
 package com.ticketti.ms_donaciones.exception;
 
-public class BusinessException {
+/**
+ * Se lanza cuando se viola una regla de negocio.
+ * Ejemplo: intentar registrar una org con RUT duplicado
+ */
+public class BusinessException extends RuntimeException {
+
+    public BusinessException(String mensaje) {
+        super(mensaje);
+    }
 }
