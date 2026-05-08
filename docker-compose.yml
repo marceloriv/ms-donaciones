@@ -19,6 +19,23 @@ services:
       retries: 10
       start_period: 30s
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: ms-donaciones-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672" #puerto AMQP (la app se conecta aquí)
+      - "15672:15672" #UI de administración
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-ticketti}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-ticketti123}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+
   app:
     build:
       context: .
@@ -28,6 +45,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "${APP_PORT:-8084}:8084"
     environment:
@@ -36,6 +55,10 @@ services:
       DB_NAME: ${DB_NAME:-ticketti_donaciones}
       DB_USER: ${DB_USER:-ticketti_app}
       DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: ${RABBITMQ_USER:-ticketti}
+      RABBITMQ_PASS: ${RABBITMQ_PASS:-ticketti123}
       EUREKA_CLIENT_ENABLED: ${EUREKA_CLIENT_ENABLED:-false}
 
 volumes:
