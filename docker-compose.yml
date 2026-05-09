@@ -6,10 +6,10 @@ services:
     ports:
       - "${DB_PORT:-3306}:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-donaciones_db}
-      MYSQL_USER: ${MYSQL_USER:-ticketti}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-ticketti123}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
@@ -27,8 +27,8 @@ services:
       - "5672:5672" # Puerto AMQP (la app se conecta aquí)
       - "15672:15672" # UI de administración
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-ticketti}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-ticketti123}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 10s
@@ -52,12 +52,12 @@ services:
       # Base de datos (compatible con Config Server)
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/donaciones_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       # RabbitMQ
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
-      RABBITMQ_USER: ${RABBITMQ_USER:-ticketti}
-      RABBITMQ_PASS: ${RABBITMQ_PASS:-ticketti123}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASS: ${RABBITMQ_PASS}
       # Eureka (opcional)
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
 
