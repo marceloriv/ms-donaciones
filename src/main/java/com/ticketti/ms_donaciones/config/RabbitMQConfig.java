@@ -17,9 +17,9 @@ public class RabbitMQConfig {
     public static final String ROUTING_KEY    = "pago.aprobado";
 
     @Bean
-    public DirectExchange exchange() {
+    public TopicExchange exchange() {
         // durable=true: sobrevive reinicios de RabbitMQ
-        return new DirectExchange(EXCHANGE, true, false);
+        return new TopicExchange(EXCHANGE, true, false);
     }
 
     @Bean
@@ -29,7 +29,7 @@ public class RabbitMQConfig {
 
     @Bean
     public Binding bindingPago(Queue queuePagoAprobado,
-                               DirectExchange exchange) {
+                               TopicExchange exchange) {
         return BindingBuilder
                 .bind(queuePagoAprobado)
                 .to(exchange)
