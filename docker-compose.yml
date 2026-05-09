@@ -6,10 +6,10 @@ services:
     ports:
       - "${DB_PORT:-3306}:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
-      MYSQL_DATABASE: ${DB_NAME:-ticketti_donaciones}
-      MYSQL_USER: ${DB_USER:-ticketti_app}
-      MYSQL_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-donaciones_db}
+      MYSQL_USER: ${MYSQL_USER:-ticketti}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-ticketti123}
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
@@ -24,8 +24,8 @@ services:
     container_name: ms-donaciones-rabbitmq
     restart: unless-stopped
     ports:
-      - "5672:5672" #puerto AMQP (la app se conecta aquí)
-      - "15672:15672" #UI de administración
+      - "5672:5672" # Puerto AMQP (la app se conecta aquí)
+      - "15672:15672" # UI de administración
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-ticketti}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-ticketti123}
@@ -34,7 +34,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-
 
   app:
     build:
@@ -50,16 +49,17 @@ services:
     ports:
       - "${APP_PORT:-8084}:8084"
     environment:
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_NAME: ${DB_NAME:-ticketti_donaciones}
-      DB_USER: ${DB_USER:-ticketti_app}
-      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      # Base de datos (compatible con Config Server)
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/donaciones_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      # RabbitMQ
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: ${RABBITMQ_USER:-ticketti}
       RABBITMQ_PASS: ${RABBITMQ_PASS:-ticketti123}
-      EUREKA_CLIENT_ENABLED: ${EUREKA_CLIENT_ENABLED:-false}
+      # Eureka (opcional)
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
 
 volumes:
   mysql-data:
