@@ -1,9 +1,9 @@
--- MS-Donaciones | ticketti_donaciones
+-- MS-Donaciones | donaciones_db
 -- Referencia del modelo (JPA crea las tablas automáticamente)
 
-CREATE DATABASE IF NOT EXISTS ticketti_donaciones
+CREATE DATABASE IF NOT EXISTS donaciones_db
     CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE ticketti_donaciones;
+USE donaciones_db;
 
 CREATE TABLE IF NOT EXISTS organizacion (
                                             id_organizacion       BIGINT AUTO_INCREMENT PRIMARY KEY,

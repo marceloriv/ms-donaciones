@@ -1,11 +1,11 @@
 package com.ticketti.ms_donaciones.service;
 
 import com.ticketti.ms_donaciones.dto.DonacionResponseDTO;
-import com.ticketti.ms_donaciones.exception.ResourceNotFoundException;
 import com.ticketti.ms_donaciones.model.DonacionModel;
 import com.ticketti.ms_donaciones.repository.DonacionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +22,7 @@ public class DonacionService {
     }
 
     /** Donaciones por organización */
+    @Transactional(readOnly = true)
     public List<DonacionResponseDTO> listarPorOrganizacion(Long idOrganizacion) {
         return donacionRepository
                 .findByOrganizacion_IdOrganizacion(idOrganizacion)
@@ -31,6 +32,7 @@ public class DonacionService {
     }
 
     /** Donaciones por causa social */
+    @Transactional(readOnly = true)
     public List<DonacionResponseDTO> listarPorCausa(Long idCausa) {
         return donacionRepository
                 .findByCausaSocial_IdCausa(idCausa)
@@ -40,6 +42,7 @@ public class DonacionService {
     }
 
     /** Donaciones por evento */
+    @Transactional(readOnly = true)
     public List<DonacionResponseDTO> listarPorEvento(Long idEvento) {
         return donacionRepository.findByIdEvento(idEvento)
                 .stream()
@@ -48,6 +51,7 @@ public class DonacionService {
     }
 
     /** Donaciones por usuario */
+    @Transactional(readOnly = true)
     public List<DonacionResponseDTO> listarPorUsuario(Long idUsuario) {
         return donacionRepository.findByIdUsuario(idUsuario)
                 .stream()
@@ -56,11 +60,13 @@ public class DonacionService {
     }
 
     /** Total recaudado por organización */
+    @Transactional(readOnly = true)
     public BigDecimal totalPorOrganizacion(Long idOrganizacion) {
         return donacionRepository.sumMontoByOrganizacion(idOrganizacion);
     }
 
     /** Total recaudado por causa */
+    @Transactional(readOnly = true)
     public BigDecimal totalPorCausa(Long idCausa) {
         return donacionRepository.sumMontoByCausa(idCausa);
     }
