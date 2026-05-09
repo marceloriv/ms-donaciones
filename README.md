@@ -36,8 +36,8 @@ docker-compose down
 ```
 
 **Servicios que se levantan:**
-- MySQL 8.4 → `localhost:3306` (usuario: `root`, password: `root`)
-- RabbitMQ 3 → `localhost:5672` (usuario: `ticketti`, password: `ticketti123`)
+- MySQL 8.4 → `localhost:3306` (credenciales definidas en `.env`)
+- RabbitMQ 3 → `localhost:5672` (credenciales definidas en `.env`)
 - MS-Donaciones → `localhost:8084`
 - RabbitMQ Management UI → `http://localhost:15672`
 
@@ -62,11 +62,11 @@ Las variables soportadas son:
 |---|---|---|
 | `SPRING_DATASOURCE_URL` | URL de conexión MySQL | `jdbc:mysql://localhost:3306/donaciones_db?...` |
 | `SPRING_DATASOURCE_USERNAME` | Usuario MySQL | `root` |
-| `SPRING_DATASOURCE_PASSWORD` | Password MySQL | (vacío) |
+| `SPRING_DATASOURCE_PASSWORD` | Password MySQL | definido en `.env` |
 | `RABBITMQ_HOST` | Host de RabbitMQ | `localhost` |
 | `RABBITMQ_PORT` | Puerto de RabbitMQ | `5672` |
-| `RABBITMQ_USER` | Usuario de RabbitMQ | `ticketti` |
-| `RABBITMQ_PASS` | Password de RabbitMQ | `ticketti123` |
+| `RABBITMQ_USER` | Usuario de RabbitMQ | definido en `.env` |
+| `RABBITMQ_PASS` | Password de RabbitMQ | definido en `.env` |
 | `EUREKA_CLIENT_SERVICEURL_DEFAULTZONE` | URL de Eureka | `http://localhost:8761/eureka/` |
 
 ### Archivos de Configuración
@@ -128,7 +128,7 @@ http://localhost:8084/swagger-ui.html
 ```bash
 # Management UI
 http://localhost:15672
-# Usuario: ticketti | Password: ticketti123
+# Usuario y password: definidos en `.env`
 ```
 
 ### Verificar Base de Datos
@@ -230,7 +230,7 @@ docker exec ms-donaciones-rabbitmq rabbitmqctl list_users
 ## 📝 Notas Importantes
 
 - **BD:** El nombre cambió de `ticketti_donaciones` a `donaciones_db` (alineado con Config Server)
-- **RabbitMQ:** Usa credenciales `ticketti:ticketti123` (no guest:guest)
+- **RabbitMQ:** Usa las credenciales definidas en `.env` (no guest:guest)
 - **Config Server:** Cuando esté activo, sobrescribe los valores de `application.properties`
 - **Eureka:** Configuración lista pero opcional en desarrollo local
 
