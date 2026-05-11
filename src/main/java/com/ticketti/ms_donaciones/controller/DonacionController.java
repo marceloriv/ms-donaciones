@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/donaciones")
+@RequestMapping("/api/v1/donaciones")
 @RequiredArgsConstructor
 @Tag(name = "Donaciones", description = "Consulta de donaciones y montos recaudados")
 public class DonacionController {
