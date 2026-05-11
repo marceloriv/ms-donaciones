@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/causas")
+@RequestMapping("/api/v1/causas")
 @RequiredArgsConstructor
 @Tag(name = "Causas Sociales", description = "Gestión de causas sociales por organización")
 public class CausaSocialController {
