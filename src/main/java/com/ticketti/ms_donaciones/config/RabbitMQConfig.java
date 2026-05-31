@@ -17,9 +17,9 @@ public class RabbitMQConfig {
     public static final String ROUTING_KEY    = "pago.aprobado";
 
     @Bean
-    public TopicExchange exchange() {
+    public DirectExchange tickettiExchange() {
         // durable=true: sobrevive reinicios de RabbitMQ
-        return new TopicExchange(EXCHANGE, true, false);
+        return new DirectExchange(EXCHANGE, true, false);
     }
 
     @Bean
@@ -29,10 +29,10 @@ public class RabbitMQConfig {
 
     @Bean
     public Binding bindingPago(Queue queuePagoAprobado,
-                               TopicExchange exchange) {
+                               DirectExchange tickettiExchange) {
         return BindingBuilder
                 .bind(queuePagoAprobado)
-                .to(exchange)
+                .to(tickettiExchange)
                 .with(ROUTING_KEY);
     }
 
@@ -41,11 +41,13 @@ public class RabbitMQConfig {
      * MSCarrito serializa el CarritoDeCompras como JSON en el outbox.
      */
     @Bean
+    @SuppressWarnings("removal")
     public Jackson2JsonMessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
     @Bean
+    @SuppressWarnings({"null", "removal"})
     public RabbitTemplate rabbitTemplate(ConnectionFactory cf,
                                          Jackson2JsonMessageConverter messageConverter) {
         RabbitTemplate template = new RabbitTemplate(cf);
@@ -54,6 +56,7 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    @SuppressWarnings({"null", "removal"})
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
             ConnectionFactory connectionFactory,
             Jackson2JsonMessageConverter messageConverter) {
