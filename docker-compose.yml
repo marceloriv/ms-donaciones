@@ -19,22 +19,6 @@ services:
       retries: 10
       start_period: 30s
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: ms-donaciones-rabbitmq
-    restart: unless-stopped
-    ports:
-      - "5672:5672" # Puerto AMQP (la app se conecta aquí)
-      - "15672:15672" # UI de administración
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
   app:
     build:
       context: .
@@ -44,15 +28,17 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
+    networks:
+      - default
+      - ticketti-network
     ports:
       - "${APP_PORT:-8084}:8084"
     environment:
+      SERVER_PORT: 8084
       # Base de datos (compatible con Config Server)
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/donaciones_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-donaciones_user}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-donaciones_pass}
       # RabbitMQ
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
@@ -63,3 +49,7 @@ services:
 
 volumes:
   mysql-data:
+
+networks:
+  ticketti-network:
+    external: true
