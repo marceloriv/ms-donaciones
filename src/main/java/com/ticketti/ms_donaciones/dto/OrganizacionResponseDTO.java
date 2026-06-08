@@ -16,5 +16,6 @@ public class OrganizacionResponseDTO {
     private MetodoPago metodoPagoPreferido;
     private EstadoOrganizacion estado;
     private LocalDateTime fechaRegistro;
+    private String documentoConvenio;
     // Datos bancarios no se exponen en el GET público
 }

@@ -25,12 +25,10 @@ public class OrganizacionRequestDTO {
     @NotBlank(message = "El email es obligatorio")
     private String email;
 
-    @NotBlank private String banco;
-    @NotBlank private String tipoCuenta;
-    @NotBlank private String numeroCuenta;
-    @NotBlank private String titularCuenta;
-    @NotBlank private String rutTitular;
-
-    @NotNull(message = "El método de pago es obligatorio")
+    private String banco;
+    private String tipoCuenta;
+    private String numeroCuenta;
+    private String titularCuenta;
+    private String rutTitular;
     private MetodoPago metodoPagoPreferido;
 }
