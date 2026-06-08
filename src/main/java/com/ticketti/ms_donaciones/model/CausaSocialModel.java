@@ -24,7 +24,7 @@ public class CausaSocialModel {
     private Long idCausa;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_organizacion", nullable = false)
+    @JoinColumn(name = "id_organizacion", nullable = true)
     private OrganizacionModel organizacion;
 
     @Column(nullable = false, length = 150)

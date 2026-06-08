@@ -26,13 +26,13 @@ public class OrganizacionModel {
     @Column(nullable = false, length = 150)
     private String nombre;
 
-    @Column(nullable = false, length = 12, unique = true)
+    @Column(nullable = true, length = 12, unique = true)
     private String rut;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = true, length = 200)
     private String direccion;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = true, length = 20)
     private String telefono;
 
     @Column(nullable = false, length = 100)
