@@ -39,23 +39,23 @@ public class OrganizacionModel {
     private String email;
 
     // --- Datos bancarios ---
-    @Column(nullable = false, length = 50)
+    @Column(nullable = true, length = 50)
     private String banco;
 
-    @Column(name = "tipo_cuenta", nullable = false, length = 30)
+    @Column(name = "tipo_cuenta", nullable = true, length = 30)
     private String tipoCuenta;
 
-    @Column(name = "numero_cuenta", nullable = false, length = 30)
+    @Column(name = "numero_cuenta", nullable = true, length = 30)
     private String numeroCuenta;
 
-    @Column(name = "titular_cuenta", nullable = false, length = 150)
+    @Column(name = "titular_cuenta", nullable = true, length = 150)
     private String titularCuenta;
 
-    @Column(name = "rut_titular", nullable = false, length = 12)
+    @Column(name = "rut_titular", nullable = true, length = 12)
     private String rutTitular;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "metodo_pago_preferido", nullable = false, length = 20)
+    @Column(name = "metodo_pago_preferido", nullable = true, length = 20)
     private MetodoPago metodoPagoPreferido;
 
     // --- Estado y auditoría ---
@@ -65,6 +65,10 @@ public class OrganizacionModel {
 
     @Column(name = "fecha_registro", nullable = false, updatable = false)
     private LocalDateTime fechaRegistro;
+
+    // Nombre del archivo PDF subido como convenio
+    @Column(name = "documento_convenio", length = 255)
+    private String documentoConvenio;
 
     // Relaciones internas de este microservicio
     @OneToMany(mappedBy = "organizacion", cascade = CascadeType.ALL)
@@ -77,7 +81,7 @@ public class OrganizacionModel {
     protected void onCreate() {
         this.fechaRegistro = LocalDateTime.now();
         if (this.estado == null) {
-            this.estado = EstadoOrganizacion.ACTIVA;
+            this.estado = EstadoOrganizacion.PENDIENTE;
         }
     }
 }

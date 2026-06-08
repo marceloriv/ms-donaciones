@@ -1,5 +1,6 @@
 package com.ticketti.ms_donaciones.service;
 
+import com.ticketti.ms_donaciones.dto.ActivarOrganizacionDTO;
 import com.ticketti.ms_donaciones.dto.OrganizacionRequestDTO;
 import com.ticketti.ms_donaciones.dto.OrganizacionResponseDTO;
 import com.ticketti.ms_donaciones.enums.EstadoOrganizacion;
@@ -7,6 +8,7 @@ import com.ticketti.ms_donaciones.exception.BusinessException;
 import com.ticketti.ms_donaciones.exception.ResourceNotFoundException;
 import com.ticketti.ms_donaciones.model.OrganizacionModel;
 import com.ticketti.ms_donaciones.repository.OrganizacionRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -85,6 +87,45 @@ public class OrganizacionService {
         organizacionRepository.save(org);
     }
 
+    /**
+     * Guarda el nombre del archivo de convenio subido por el organizador.
+     * El archivo físico es manejado por el controller con MultipartFile.
+     */
+    public OrganizacionResponseDTO guardarDocumento(Long id, String nombreArchivo) {
+        OrganizacionModel org = organizacionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Organización", id));
+
+        org.setDocumentoConvenio(nombreArchivo);
+        return mapToResponse(organizacionRepository.save(org));
+    }
+
+    /**
+     * El admin aprueba la organización: completa datos bancarios y cambia
+     * el estado de PENDIENTE a ACTIVA.
+     */
+    public OrganizacionResponseDTO activar(Long id, @Valid ActivarOrganizacionDTO dto) {
+        OrganizacionModel org = organizacionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Organización", id));
+
+        // Solo se puede activar una organización que esté PENDIENTE
+        if (org.getEstado() != EstadoOrganizacion.PENDIENTE) {
+            throw new BusinessException(
+                    "La organización no está en estado PENDIENTE. Estado actual: "
+                            + org.getEstado());
+        }
+
+        // Completar datos bancarios que el organizador no pudo ingresar
+        org.setBanco(dto.getBanco());
+        org.setTipoCuenta(dto.getTipoCuenta());
+        org.setNumeroCuenta(dto.getNumeroCuenta());
+        org.setTitularCuenta(dto.getTitularCuenta());
+        org.setRutTitular(dto.getRutTitular());
+        org.setMetodoPagoPreferido(dto.getMetodoPagoPreferido());
+        org.setEstado(EstadoOrganizacion.ACTIVA);
+
+        return mapToResponse(organizacionRepository.save(org));
+    }
+
     // --- Mappers privados ---
     private OrganizacionModel mapToEntity(OrganizacionRequestDTO dto) {
         return OrganizacionModel.builder()
@@ -113,6 +154,7 @@ public class OrganizacionService {
         dto.setMetodoPagoPreferido(org.getMetodoPagoPreferido());
         dto.setEstado(org.getEstado());
         dto.setFechaRegistro(org.getFechaRegistro());
+        dto.setDocumentoConvenio(org.getDocumentoConvenio());
         return dto;
     }
 }
