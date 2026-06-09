@@ -28,8 +28,6 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
     networks:
       - default
       - ticketti-network
@@ -47,7 +45,9 @@ services:
       RABBITMQ_USER: ${RABBITMQ_USER}
       RABBITMQ_PASS: ${RABBITMQ_PASS}
       # Eureka (opcional)
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+      # Config Server
+      SPRING_CONFIG_IMPORT: optional:configserver:http://host.docker.internal:8888
 
 volumes:
   mysql-data:
