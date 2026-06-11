@@ -37,6 +37,12 @@ public class OrganizacionController {
                 .body(organizacionService.crear(dto));
     }
 
+    @GetMapping("/todas")
+    @Operation(summary = "Listar todas las organizaciones (admin)")
+    public ResponseEntity<List<OrganizacionResponseDTO>> listarTodas() {
+        return ResponseEntity.ok(organizacionService.listarTodas());
+    }
+
     // GET /api/organizaciones
     @GetMapping
     @Operation(summary = "Listar organizaciones activas")

@@ -8,7 +8,9 @@ COPY mvnw ./
 # Descarga dependencias primero (cache de Docker)
 RUN chmod +x mvnw && ./mvnw -q -DskipTests dependency:go-offline
 COPY src src
-RUN ./mvnw -q -DskipTests package
+
+# Corre los tests Y empaqueta — si los tests fallan, el build se detiene
+RUN ./mvnw -q package
 
 # Etapa 2: imagen final liviana
 FROM eclipse-temurin:17-jre
