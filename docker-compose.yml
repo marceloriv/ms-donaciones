@@ -4,7 +4,7 @@ services:
     container_name: ms-donaciones-mysql
     restart: unless-stopped
     ports:
-      - "${DB_PORT:-3307}:3306"
+      - "${DB_PORT:-3309}:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-donaciones_db}
@@ -45,8 +45,9 @@ services:
       RABBITMQ_USER: ${RABBITMQ_USER}
       RABBITMQ_PASS: ${RABBITMQ_PASS}
       # Eureka (opcional)
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
-      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+      # Config Server
+      SPRING_CONFIG_IMPORT: optional:configserver:http://host.docker.internal:8888
 
 volumes:
   mysql-data:
