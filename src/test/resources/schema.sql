@@ -2,18 +2,19 @@
 CREATE TABLE IF NOT EXISTS organizacion (
                                             id_organizacion       BIGINT AUTO_INCREMENT PRIMARY KEY,
                                             nombre                VARCHAR(150)  NOT NULL,
-    rut                   VARCHAR(12)   NOT NULL UNIQUE,
-    direccion             VARCHAR(200)  NOT NULL,
-    telefono              VARCHAR(20)   NOT NULL,
+    rut                   VARCHAR(12)   UNIQUE,
+    direccion             VARCHAR(200),
+    telefono              VARCHAR(20),
     email                 VARCHAR(100)  NOT NULL,
-    banco                 VARCHAR(50)   NOT NULL,
-    tipo_cuenta           VARCHAR(30)   NOT NULL,
-    numero_cuenta         VARCHAR(30)   NOT NULL,
-    titular_cuenta        VARCHAR(150)  NOT NULL,
-    rut_titular           VARCHAR(12)   NOT NULL,
-    metodo_pago_preferido VARCHAR(20)   NOT NULL,
-    estado                VARCHAR(20)   NOT NULL DEFAULT 'ACTIVA',
-    fecha_registro        DATETIME      NOT NULL
+    banco                 VARCHAR(50),
+    tipo_cuenta           VARCHAR(30),
+    numero_cuenta         VARCHAR(30),
+    titular_cuenta        VARCHAR(150),
+    rut_titular           VARCHAR(12),
+    metodo_pago_preferido VARCHAR(20),
+    estado                VARCHAR(20)   NOT NULL DEFAULT 'PENDIENTE',
+    fecha_registro        TIMESTAMP     NOT NULL,
+    documento_convenio    VARCHAR(255)
     );
 
 CREATE TABLE IF NOT EXISTS representante (
