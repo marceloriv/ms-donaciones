@@ -32,6 +32,14 @@ public class OrganizacionService {
         return mapToResponse(guardada);
     }
 
+    /** Listar todas las organizaciones */
+    public List<OrganizacionResponseDTO> listarTodas() {
+        return organizacionRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
     /** Listar todas las organizaciones activas */
     public List<OrganizacionResponseDTO> listarActivas() {
         return organizacionRepository
