@@ -1,6 +1,7 @@
 package com.ticketti.ms_donaciones.model;
 
 import com.ticketti.ms_donaciones.enums.TipoRepresentante;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class RepresentanteModel {
     // FK a Organizacion (misma BD, sí usamos @ManyToOne)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_organizacion", nullable = false)
+    @JsonIgnore
     private OrganizacionModel organizacion;
 
     @Column(nullable = false, length = 150)

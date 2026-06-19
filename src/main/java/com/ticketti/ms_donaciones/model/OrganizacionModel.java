@@ -29,7 +29,7 @@ public class OrganizacionModel {
     @Column(nullable = true, length = 12, unique = true)
     private String rut;
 
-    @Column(nullable = true, length = 200)
+    @Column(nullable = true, length = 500)
     private String direccion;
 
     @Column(nullable = true, length = 20)

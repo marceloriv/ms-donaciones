@@ -1,6 +1,7 @@
 package com.ticketti.ms_donaciones.controller;
 
 import com.ticketti.ms_donaciones.dto.CausaSocialRequestDTO;
+import com.ticketti.ms_donaciones.dto.CausaSocialResponseDTO;
 import com.ticketti.ms_donaciones.model.CausaSocialModel;
 import com.ticketti.ms_donaciones.service.CausaSocialService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,33 +24,43 @@ public class CausaSocialController {
     // POST /api/causas
     @PostMapping
     @Operation(summary = "Crear causa social")
-    public ResponseEntity<CausaSocialModel> crear(
+    public ResponseEntity<CausaSocialResponseDTO> crear(
             @Valid @RequestBody CausaSocialRequestDTO dto) {
+        CausaSocialModel creada = causaSocialService.crear(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(causaSocialService.crear(dto));
+                .body(CausaSocialResponseDTO.desdeModelo(creada));
     }
 
     // GET /api/causas/activas
     @GetMapping("/activas")
     @Operation(summary = "Listar causas activas (visible al comprador)")
-    public ResponseEntity<List<CausaSocialModel>> listarActivas() {
-        return ResponseEntity.ok(causaSocialService.listarActivas());
+    public ResponseEntity<List<CausaSocialResponseDTO>> listarActivas() {
+        List<CausaSocialResponseDTO> resultado = causaSocialService.listarActivas()
+        .stream()
+        .map(CausaSocialResponseDTO::desdeModelo)
+        .toList();
+        return ResponseEntity.ok(resultado);
     }
 
     // GET /api/causas/organizacion/{idOrganizacion}
     @GetMapping("/organizacion/{idOrganizacion}")
     @Operation(summary = "Listar causas de una organización")
-    public ResponseEntity<List<CausaSocialModel>> listarPorOrganizacion(
+    public ResponseEntity<List<CausaSocialResponseDTO>> listarPorOrganizacion(
             @PathVariable Long idOrganizacion) {
-        return ResponseEntity.ok(
-                causaSocialService.listarPorOrganizacion(idOrganizacion));
+        List<CausaSocialResponseDTO> resultado = causaSocialService
+                .listarPorOrganizacion(idOrganizacion)
+                .stream()
+                .map(CausaSocialResponseDTO::desdeModelo)
+                .toList();
+        return ResponseEntity.ok(resultado);
     }
 
     // GET /api/causas/{id}
     @GetMapping("/{id}")
     @Operation(summary = "Buscar causa por ID")
-    public ResponseEntity<CausaSocialModel> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(causaSocialService.buscarPorId(id));
+    public ResponseEntity<CausaSocialResponseDTO> buscarPorId(@PathVariable Long id) {
+        CausaSocialModel causa = causaSocialService.buscarPorId(id);
+        return ResponseEntity.ok(CausaSocialResponseDTO.desdeModelo(causa));
     }
 
     // DELETE /api/causas/{id}
