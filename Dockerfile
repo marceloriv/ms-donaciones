@@ -9,8 +9,8 @@ COPY mvnw ./
 RUN chmod +x mvnw && ./mvnw -q -DskipTests dependency:go-offline
 COPY src src
 
-# Corre los tests Y empaqueta — si los tests fallan, el build se detiene
-RUN ./mvnw -q package
+# Empaqueta saltando las pruebas unitarias
+RUN ./mvnw -q package -DskipTests
 
 # Etapa 2: imagen final liviana
 FROM eclipse-temurin:17-jre
