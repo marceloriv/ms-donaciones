@@ -1,6 +1,7 @@
 package com.ticketti.ms_donaciones.model;
 
 import com.ticketti.ms_donaciones.enums.EstadoCausaSocial;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,7 @@ public class CausaSocialModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_organizacion", nullable = true)
+    @JsonIgnore
     private OrganizacionModel organizacion;
 
     @Column(nullable = false, length = 150)
