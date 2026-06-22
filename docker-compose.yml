@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     ports:
       - "${DB_PORT:-3309}:3306"
+    networks:
+      - ticketti-network
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-donaciones_db}
@@ -29,7 +31,6 @@ services:
       mysql:
         condition: service_healthy
     networks:
-      - default
       - ticketti-network
     ports:
       - "${APP_PORT:-8084}:8084"
