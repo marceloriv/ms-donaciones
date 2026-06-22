@@ -47,6 +47,8 @@ services:
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
       # Eureka (opcional)
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+      # JWT
+      JWT_SECRET: ${JWT_SECRET}
       # Config Server
       SPRING_CONFIG_IMPORT: optional:configserver:http://host.docker.internal:8888
 
@@ -56,3 +58,4 @@ volumes:
 networks:
   ticketti-network:
     external: true
+    name: ticketti-network
