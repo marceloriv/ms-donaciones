@@ -34,5 +34,7 @@ build/
 
 ### Secrets ###
 .env
+.env.local
+
 
 mvn-debug.txt
