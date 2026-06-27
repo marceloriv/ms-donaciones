@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS causa_social (
     objetivo_monto    DECIMAL(15,2),
     fecha_inicio      DATE           NOT NULL,
     fecha_fin         DATE,
-    estado            VARCHAR(20)    NOT NULL DEFAULT 'ACTIVA',
+    estado            VARCHAR(20)    NOT NULL DEFAULT 'PENDIENTE',
+    imagen_url        VARCHAR(500),
     CONSTRAINT fk_causa_org
     FOREIGN KEY (id_organizacion) REFERENCES organizacion(id_organizacion)
     );

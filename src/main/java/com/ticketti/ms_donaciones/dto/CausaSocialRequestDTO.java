@@ -22,4 +22,6 @@ public class CausaSocialRequestDTO {
     private LocalDate fechaInicio;
 
     private LocalDate fechaFin; // null = causa permanente
+
+    private String imagenUrl; // opcional — URL de imagen de portada
 }

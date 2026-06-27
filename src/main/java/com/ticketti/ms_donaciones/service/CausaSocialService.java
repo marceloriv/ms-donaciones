@@ -32,6 +32,7 @@ public class CausaSocialService {
                 .objetivoMonto(dto.getObjetivoMonto())
                 .fechaInicio(dto.getFechaInicio())
                 .fechaFin(dto.getFechaFin())
+                .imagenUrl(dto.getImagenUrl())
                 .build();
 
         return causaSocialRepository.save(causa);
@@ -59,6 +60,13 @@ public class CausaSocialService {
         return causaSocialRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("CausaSocial", id));
+    }
+
+    /** Activar causa que está en estado PENDIENTE */
+    public CausaSocialModel activar(Long id) {
+        CausaSocialModel causa = buscarPorId(id);
+        causa.setEstado(EstadoCausaSocial.ACTIVA);
+        return causaSocialRepository.save(causa);
     }
 
     /** Desactivar causa (borrado lógico) */

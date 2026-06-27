@@ -50,11 +50,14 @@ public class CausaSocialModel {
     @Column(nullable = false, length = 20)
     private EstadoCausaSocial estado;
 
+    @Column(name = "imagen_url", length = 500)
+    private String imagenUrl;
+
     @OneToMany(mappedBy = "causaSocial", cascade = CascadeType.ALL)
     private List<DonacionModel> donaciones;
 
     @PrePersist
     protected void onCreate() {
-        if (this.estado == null) this.estado = EstadoCausaSocial.ACTIVA;
+        if (this.estado == null) this.estado = EstadoCausaSocial.PENDIENTE;
     }
 }

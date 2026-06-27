@@ -74,6 +74,14 @@ public class CausaSocialController {
         return ResponseEntity.ok(CausaSocialResponseDTO.desdeModelo(causa));
     }
 
+    // PUT /api/v1/causas/{id}/activar
+    @PutMapping("/{id}/activar")
+    @Operation(summary = "Activar causa social (AdminPlataforma)")
+    public ResponseEntity<CausaSocialResponseDTO> activar(@PathVariable Long id) {
+        CausaSocialModel activada = causaSocialService.activar(id);
+        return ResponseEntity.ok(CausaSocialResponseDTO.desdeModelo(activada));
+    }
+
     // DELETE /api/v1/causas/{id}
     @DeleteMapping("/{id}")
     @Operation(summary = "Desactivar causa social")
