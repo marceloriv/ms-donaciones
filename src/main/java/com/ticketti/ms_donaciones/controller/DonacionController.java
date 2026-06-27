@@ -1,10 +1,13 @@
 package com.ticketti.ms_donaciones.controller;
 
 import com.ticketti.ms_donaciones.dto.DonacionResponseDTO;
+import com.ticketti.ms_donaciones.security.JwtService;
 import com.ticketti.ms_donaciones.service.DonacionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
@@ -17,6 +20,22 @@ import java.util.List;
 public class DonacionController {
 
     private final DonacionService donacionService;
+    private final JwtService jwtService;
+
+    // GET /api/v1/donaciones/me
+    @GetMapping("/me")
+    @Operation(summary = "Donaciones del usuario autenticado (userId extraído del JWT)")
+    public ResponseEntity<List<DonacionResponseDTO>> misDonaciones(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        Long idUsuario = jwtService.extractUserId(authHeader.substring(7));
+        if (idUsuario == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(donacionService.listarPorUsuario(idUsuario));
+    }
 
     // GET /api/donaciones/organizacion/{id}
     @GetMapping("/organizacion/{id}")
