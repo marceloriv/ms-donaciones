@@ -1,7 +1,6 @@
 package com.ticketti.ms_donaciones.messaging;
 
 import com.ticketti.ms_donaciones.config.RabbitMQConfig;
-import com.ticketti.ms_donaciones.exception.ResourceNotFoundException;
 import com.ticketti.ms_donaciones.model.CausaSocialModel;
 import com.ticketti.ms_donaciones.model.DonacionModel;
 import com.ticketti.ms_donaciones.model.OrganizacionModel;
@@ -39,8 +38,13 @@ public class DonacionConsumer {
             // 1. Buscar la causa social elegida por el comprador
             CausaSocialModel causa = causaSocialRepository
                     .findById(evento.getCausaSocialId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "CausaSocial", evento.getCausaSocialId()));
+                    .orElse(null);
+
+            if (causa == null) {
+                log.warn("CausaSocial {} no encontrada, saltando donacion para carrito {}",
+                        evento.getCausaSocialId(), evento.getIdCarrito());
+                return;
+            }
 
             // 2. Obtener la organización de esa causa
             OrganizacionModel org = causa.getOrganizacion();
