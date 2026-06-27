@@ -102,6 +102,28 @@ public class OrganizacionController {
                 organizacionService.guardarDocumento(id, nombreArchivo));
     }
 
+
+    // GET /api/v1/organizaciones/{id}/documento
+    @GetMapping("/{id}/documento")
+    @Operation(summary = "Descargar documento de convenio")
+    public ResponseEntity<byte[]> descargarDocumento(@PathVariable Long id) throws IOException {
+        OrganizacionResponseDTO org = organizacionService.buscarPorId(id);
+        String nombreArchivo = org.getDocumentoConvenio();
+        if (nombreArchivo == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Path archivoPath = Paths.get("uploads/convenios/" + nombreArchivo);
+        if (!Files.exists(archivoPath)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] contenido = Files.readAllBytes(archivoPath);
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=\"" + nombreArchivo + "\"")
+                .body(contenido);
+    }
+
     /**
      * PUT /api/v1/organizaciones/{id}/activar
      * Solo ADMINPLATAFORMA. Completa datos bancarios y cambia estado a ACTIVA.
