@@ -37,6 +37,12 @@ public class CausaSocialService {
         return causaSocialRepository.save(causa);
     }
 
+    /** Listar todas las causas sociales */
+    public List<CausaSocialModel> listarTodas() {
+        return causaSocialRepository.findAll();
+    }
+
+
     /** Listar causas activas (el comprador las ve al elegir) */
     public List<CausaSocialModel> listarActivas() {
         return causaSocialRepository.findByEstado(EstadoCausaSocial.ACTIVA);

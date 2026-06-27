@@ -21,7 +21,7 @@ public class CausaSocialController {
 
     private final CausaSocialService causaSocialService;
 
-    // POST /api/causas
+    // POST /api/v1/causas
     @PostMapping
     @Operation(summary = "Crear causa social")
     public ResponseEntity<CausaSocialResponseDTO> crear(
@@ -31,7 +31,18 @@ public class CausaSocialController {
                 .body(CausaSocialResponseDTO.desdeModelo(creada));
     }
 
-    // GET /api/causas/activas
+    //GET /api/v1/causas/todas
+    @GetMapping("/todas")
+    @Operation(summary = "Listar todas las causas sociales")
+    public ResponseEntity<List<CausaSocialResponseDTO>> listarTodas() {
+        List<CausaSocialResponseDTO> resultado = causaSocialService.listarTodas()
+                .stream()
+                .map(CausaSocialResponseDTO::desdeModelo)
+                .toList();
+        return ResponseEntity.ok(resultado);
+    }
+
+    // GET /api/v1/causas/activas
     @GetMapping("/activas")
     @Operation(summary = "Listar causas activas (visible al comprador)")
     public ResponseEntity<List<CausaSocialResponseDTO>> listarActivas() {
@@ -42,7 +53,7 @@ public class CausaSocialController {
         return ResponseEntity.ok(resultado);
     }
 
-    // GET /api/causas/organizacion/{idOrganizacion}
+    // GET /api/v1/causas/organizacion/{idOrganizacion}
     @GetMapping("/organizacion/{idOrganizacion}")
     @Operation(summary = "Listar causas de una organización")
     public ResponseEntity<List<CausaSocialResponseDTO>> listarPorOrganizacion(
@@ -55,7 +66,7 @@ public class CausaSocialController {
         return ResponseEntity.ok(resultado);
     }
 
-    // GET /api/causas/{id}
+    // GET /api/v1/causas/{id}
     @GetMapping("/{id}")
     @Operation(summary = "Buscar causa por ID")
     public ResponseEntity<CausaSocialResponseDTO> buscarPorId(@PathVariable Long id) {
@@ -63,7 +74,7 @@ public class CausaSocialController {
         return ResponseEntity.ok(CausaSocialResponseDTO.desdeModelo(causa));
     }
 
-    // DELETE /api/causas/{id}
+    // DELETE /api/v1/causas/{id}
     @DeleteMapping("/{id}")
     @Operation(summary = "Desactivar causa social")
     public ResponseEntity<Void> desactivar(@PathVariable Long id) {
