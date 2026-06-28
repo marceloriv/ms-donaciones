@@ -62,6 +62,18 @@ public class CausaSocialService {
                         new ResourceNotFoundException("CausaSocial", id));
     }
 
+    /** Actualizar datos de una causa social (sin cambiar su organización ni estado) */
+    public CausaSocialModel actualizar(Long id, CausaSocialRequestDTO dto) {
+        CausaSocialModel causa = buscarPorId(id);
+        causa.setNombre(dto.getNombre());
+        causa.setDescripcion(dto.getDescripcion());
+        causa.setObjetivoMonto(dto.getObjetivoMonto());
+        causa.setFechaInicio(dto.getFechaInicio());
+        causa.setFechaFin(dto.getFechaFin());
+        causa.setImagenUrl(dto.getImagenUrl());
+        return causaSocialRepository.save(causa);
+    }
+
     /** Activar causa que está en estado PENDIENTE */
     public CausaSocialModel activar(Long id) {
         CausaSocialModel causa = buscarPorId(id);

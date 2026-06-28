@@ -35,6 +35,22 @@ public class DonacionConsumer {
         log.info("Evento recibido: pago.aprobado para carrito {}",
                 evento.getIdCarrito());
 
+        // Validar campos requeridos — mensaje malformado se descarta sin reintentar
+        if (evento.getPagoId() == null || evento.getUsuarioId() == null
+                || evento.getMontoDonacion() == null) {
+            log.warn("Evento pago.aprobado carrito {} descartado: campos nulos " +
+                    "(pagoId={}, usuarioId={}, montoDonacion={})",
+                    evento.getIdCarrito(), evento.getPagoId(),
+                    evento.getUsuarioId(), evento.getMontoDonacion());
+            return;
+        }
+
+        if (evento.getCausaSocialId() == null) {
+            log.warn("Evento pago.aprobado carrito {} descartado: sin causa social.",
+                    evento.getIdCarrito());
+            return;
+        }
+
         try {
             // 1. Buscar la causa social elegida por el comprador
             CausaSocialModel causa = causaSocialRepository
@@ -47,30 +63,29 @@ public class DonacionConsumer {
 
             // 3. Construir y guardar la donación
             DonacionModel donacion = DonacionModel.builder()
-                    // IDs lógicos de otros microservicios (sin FK)
                     .idCompra(evento.getIdCarrito())
                     .idPago(evento.getPagoId())
                     .idUsuario(evento.getUsuarioId())
                     .idEvento(evento.getEventoId())
-                    // FK locales (misma BD)
                     .causaSocial(causa)
                     .organizacion(org)
-                    // El monto ya viene calculado desde MSCarrito
                     .monto(evento.getMontoDonacion())
                     .build();
 
             donacionRepository.save(donacion);
 
             log.info("Donacion registrada: {} CLP para causa '{}' org '{}'",
-                    evento.getMontoDonacion(),
-                    causa.getNombre(),
-                    org.getNombre());
+                    evento.getMontoDonacion(), causa.getNombre(), org.getNombre());
 
+        } catch (ResourceNotFoundException e) {
+            // Causa no existe — dato referencial inválido, descartar sin reintentar
+            log.warn("Evento pago.aprobado carrito {} descartado: {}",
+                    evento.getIdCarrito(), e.getMessage());
         } catch (Exception e) {
-            // Si falla, RabbitMQ reintentará según su configuración
+            // Error transiente (BD, red) — relanzar para que RabbitMQ reintente
             log.error("Error procesando evento pago.aprobado carrito {}: {}",
                     evento.getIdCarrito(), e.getMessage());
-            throw e; // re-lanzar para que RabbitMQ reintente
+            throw e;
         }
     }
 }
