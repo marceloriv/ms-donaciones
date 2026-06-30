@@ -27,6 +27,7 @@ public class CausaSocialResponseDTO {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private EstadoCausaSocial estado;
+    private boolean documentoEnviado;
 
     // Datos planos de la organización, sin anidar el objeto completo
     private Long idOrganizacion;
@@ -47,6 +48,7 @@ public class CausaSocialResponseDTO {
                 .fechaInicio(causa.getFechaInicio())
                 .fechaFin(causa.getFechaFin())
                 .estado(causa.getEstado())
+                .documentoEnviado(causa.isDocumentoEnviado())
                 .idOrganizacion(
                         causa.getOrganizacion() != null
                                 ? causa.getOrganizacion().getIdOrganizacion()

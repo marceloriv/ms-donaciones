@@ -50,11 +50,20 @@ public class CausaSocialModel {
     @Column(nullable = false, length = 20)
     private EstadoCausaSocial estado;
 
+    // El organizador sube un PDF de respaldo (no se almacena, se reenvía por
+    // correo al equipo Ticketti); esto solo registra si ya se envió.
+    @Column(name = "documento_enviado", nullable = false)
+    @Builder.Default
+    private boolean documentoEnviado = false;
+
+    @Column(name = "fecha_documento_enviado")
+    private java.time.LocalDateTime fechaDocumentoEnviado;
+
     @OneToMany(mappedBy = "causaSocial", cascade = CascadeType.ALL)
     private List<DonacionModel> donaciones;
 
     @PrePersist
     protected void onCreate() {
-        if (this.estado == null) this.estado = EstadoCausaSocial.ACTIVA;
+        if (this.estado == null) this.estado = EstadoCausaSocial.PENDIENTE;
     }
 }

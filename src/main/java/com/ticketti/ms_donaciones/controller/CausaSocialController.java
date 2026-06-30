@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
@@ -80,5 +81,31 @@ public class CausaSocialController {
     public ResponseEntity<Void> desactivar(@PathVariable Long id) {
         causaSocialService.desactivar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * POST /api/v1/causas/{id}/documento
+     * El organizador sube el PDF de respaldo. No se guarda en disco: se
+     * reenvía por correo al equipo Ticketti para validación manual.
+     */
+    @PostMapping("/{id}/documento")
+    @Operation(summary = "Enviar documento de respaldo de la causa para validación")
+    public ResponseEntity<CausaSocialResponseDTO> enviarDocumento(
+            @PathVariable Long id,
+            @RequestParam("archivo") MultipartFile archivo,
+            @RequestParam("nombreOrganizador") String nombreOrganizador) {
+        return ResponseEntity.ok(
+                causaSocialService.enviarDocumento(id, archivo, nombreOrganizador));
+    }
+
+    /**
+     * PUT /api/v1/causas/{id}/activar
+     * Solo admin. Cambia la causa de PENDIENTE a ACTIVA tras validar el
+     * documento de respaldo recibido por correo.
+     */
+    @PutMapping("/{id}/activar")
+    @Operation(summary = "Aprobar y activar causa social pendiente")
+    public ResponseEntity<CausaSocialResponseDTO> activar(@PathVariable Long id) {
+        return ResponseEntity.ok(causaSocialService.activar(id));
     }
 }

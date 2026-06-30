@@ -3,6 +3,7 @@ package com.ticketti.ms_donaciones;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * Microservicio MS-Donaciones.
@@ -11,6 +12,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @SpringBootApplication
 @EnableDiscoveryClient // se registra en Eureka
+@EnableFeignClients
 public class MsDonacionesApplication {
 
 	public static void main(String[] args) {
