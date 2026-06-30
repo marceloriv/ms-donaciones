@@ -91,7 +91,7 @@ class CausaSocialServiceTest {
     @Test
     @DisplayName("Listar causas activas retorna lista")
     void listarActivas_retornaLista() {
-        when(causaSocialRepository.findByEstado(EstadoCausaSocial.ACTIVA))
+        when(causaSocialRepository.findByEstadoAndOrganizacionIsNotNull(EstadoCausaSocial.ACTIVA))
                 .thenReturn(List.of(causa));
 
         List<CausaSocialModel> resultado = causaSocialService.listarActivas();

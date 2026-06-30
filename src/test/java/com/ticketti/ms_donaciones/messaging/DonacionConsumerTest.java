@@ -1,6 +1,5 @@
 package com.ticketti.ms_donaciones.messaging;
 
-import com.ticketti.ms_donaciones.exception.ResourceNotFoundException;
 import com.ticketti.ms_donaciones.model.CausaSocialModel;
 import com.ticketti.ms_donaciones.model.DonacionModel;
 import com.ticketti.ms_donaciones.model.OrganizacionModel;
@@ -16,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Optional;
-import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -72,16 +70,15 @@ class DonacionConsumerTest {
     }
 
     @Test
-    @DisplayName("Evento con causa inexistente lanza excepción")
-    void procesarEvento_causaNoExiste_lanzaExcepcion() {
+    @DisplayName("Evento con causa inexistente omite la donación sin lanzar excepción")
+    void procesarEvento_causaNoExiste_omiteDonacion() {
         when(causaSocialRepository.findById(99L))
                 .thenReturn(Optional.empty());
 
         evento.setCausaSocialId(99L);
 
-        assertThatThrownBy(() ->
-                donacionConsumer.procesarPagoAprobado(evento))
-                .isInstanceOf(ResourceNotFoundException.class);
+        // La implementación hace orElse(null) + log.warn + return: no lanza excepción
+        donacionConsumer.procesarPagoAprobado(evento);
 
         verify(donacionRepository, never())
                 .save(any(DonacionModel.class));

@@ -32,14 +32,16 @@ CREATE TABLE IF NOT EXISTS representante (
     );
 
 CREATE TABLE IF NOT EXISTS causa_social (
-                                            id_causa          BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                            id_organizacion   BIGINT         NOT NULL,
-                                            nombre            VARCHAR(150)   NOT NULL,
-    descripcion       VARCHAR(1000),
-    objetivo_monto    DECIMAL(15,2),
-    fecha_inicio      DATE           NOT NULL,
-    fecha_fin         DATE,
-    estado            VARCHAR(20)    NOT NULL DEFAULT 'ACTIVA',
+                                            id_causa                 BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                            id_organizacion          BIGINT,
+                                            nombre                   VARCHAR(150)  NOT NULL,
+    descripcion              VARCHAR(1000),
+    objetivo_monto           DECIMAL(15,2),
+    fecha_inicio             DATE          NOT NULL,
+    fecha_fin                DATE,
+    estado                   VARCHAR(20)   NOT NULL DEFAULT 'PENDIENTE',
+    documento_enviado        BOOLEAN       NOT NULL DEFAULT FALSE,
+    fecha_documento_enviado  TIMESTAMP,
     CONSTRAINT fk_causa_org
     FOREIGN KEY (id_organizacion) REFERENCES organizacion(id_organizacion)
     );
@@ -53,7 +55,7 @@ CREATE TABLE IF NOT EXISTS donacion (
                                         id_causa          BIGINT         NOT NULL,
                                         id_organizacion   BIGINT         NOT NULL,
                                         monto             DECIMAL(15,2)  NOT NULL,
-    fecha             DATETIME       NOT NULL,
+    fecha             TIMESTAMP      NOT NULL,
     estado            VARCHAR(20)    NOT NULL DEFAULT 'APROBADA',
     CONSTRAINT fk_don_causa
     FOREIGN KEY (id_causa) REFERENCES causa_social(id_causa),
