@@ -46,8 +46,16 @@ public class DonacionConsumer {
                 return;
             }
 
-            // 2. Obtener la organización de esa causa
+            // 2. Obtener la organización de esa causa. Sin organización no hay
+            //    cuenta bancaria a donde depositar, así que la donación no se
+            //    puede registrar (no debería ocurrir si listarActivas() filtra
+            //    bien, pero se deja como red de seguridad).
             OrganizacionModel org = causa.getOrganizacion();
+            if (org == null) {
+                log.warn("CausaSocial {} no tiene organización asociada, saltando donacion para carrito {}",
+                        causa.getIdCausa(), evento.getIdCarrito());
+                return;
+            }
 
             // 3. Construir y guardar la donación
             DonacionModel donacion = DonacionModel.builder()

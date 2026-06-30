@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 public class CausaSocialRequestDTO {
 
-    @NotNull(message = "La organización es obligatoria")
+    // Opcional: la causa puede crearse antes de tener una organización asociada
     private Long idOrganizacion;
 
     @NotBlank(message = "El nombre es obligatorio")

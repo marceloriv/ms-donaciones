@@ -16,6 +16,10 @@ public interface CausaSocialRepository
     // Causas activas (las que el comprador puede elegir)
     List<CausaSocialModel> findByEstado(EstadoCausaSocial estado);
 
+    // Causas activas CON organización asociada: solo estas pueden recibir
+    // donaciones reales (se necesita la cuenta bancaria de la organización).
+    List<CausaSocialModel> findByEstadoAndOrganizacionIsNotNull(EstadoCausaSocial estado);
+
     // Combinado: causas activas de una organización
     List<CausaSocialModel> findByOrganizacion_IdOrganizacionAndEstado(
             Long idOrganizacion, EstadoCausaSocial estado);

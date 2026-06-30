@@ -18,12 +18,15 @@ public class CausaSocialService {
     private final CausaSocialRepository causaSocialRepository;
     private final OrganizacionRepository organizacionRepository;
 
-    /** Crear causa social asociada a una organización */
+    /** Crear causa social. La organización es opcional: puede asociarse después. */
     public CausaSocialModel crear(CausaSocialRequestDTO dto) {
-        OrganizacionModel org = organizacionRepository
-                .findById(dto.getIdOrganizacion())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Organización", dto.getIdOrganizacion()));
+        OrganizacionModel org = null;
+        if (dto.getIdOrganizacion() != null) {
+            org = organizacionRepository
+                    .findById(dto.getIdOrganizacion())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Organización", dto.getIdOrganizacion()));
+        }
 
         CausaSocialModel causa = CausaSocialModel.builder()
                 .organizacion(org)
@@ -43,9 +46,14 @@ public class CausaSocialService {
     }
 
 
-    /** Listar causas activas (el comprador las ve al elegir) */
+    /**
+     * Listar causas activas (el comprador/organizador las ve al elegir).
+     * Solo se muestran las que ya tienen organización asociada, porque sin
+     * ella no hay cuenta bancaria a donde depositar las donaciones.
+     */
     public List<CausaSocialModel> listarActivas() {
-        return causaSocialRepository.findByEstado(EstadoCausaSocial.ACTIVA);
+        return causaSocialRepository
+                .findByEstadoAndOrganizacionIsNotNull(EstadoCausaSocial.ACTIVA);
     }
 
     /** Listar causas de una organización específica */
