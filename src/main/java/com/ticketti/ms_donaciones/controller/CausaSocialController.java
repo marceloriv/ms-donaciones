@@ -1,5 +1,6 @@
 package com.ticketti.ms_donaciones.controller;
 
+import com.ticketti.ms_donaciones.dto.AsociarOrganizacionRequestDTO;
 import com.ticketti.ms_donaciones.dto.CausaSocialRequestDTO;
 import com.ticketti.ms_donaciones.dto.CausaSocialResponseDTO;
 import com.ticketti.ms_donaciones.model.CausaSocialModel;
@@ -107,5 +108,18 @@ public class CausaSocialController {
     @Operation(summary = "Aprobar y activar causa social pendiente")
     public ResponseEntity<CausaSocialResponseDTO> activar(@PathVariable Long id) {
         return ResponseEntity.ok(causaSocialService.activar(id));
+    }
+
+    /**
+     * PUT /api/v1/causas/{id}/organizacion
+     * Solo admin. Asocia (o reasigna) la organización de una causa social
+     * que fue creada por el organizador sin una (ver CausaSocialRequestDTO).
+     */
+    @PutMapping("/{id}/organizacion")
+    @Operation(summary = "Asociar una organización existente a la causa social")
+    public ResponseEntity<CausaSocialResponseDTO> asociarOrganizacion(
+            @PathVariable Long id,
+            @Valid @RequestBody AsociarOrganizacionRequestDTO dto) {
+        return ResponseEntity.ok(causaSocialService.asociarOrganizacion(id, dto));
     }
 }

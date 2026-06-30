@@ -2,6 +2,7 @@ package com.ticketti.ms_donaciones.service;
 
 import com.ticketti.ms_donaciones.client.MensajeriaClient;
 import com.ticketti.ms_donaciones.client.dto.EnviarDocumentoCausaRequestDTO;
+import com.ticketti.ms_donaciones.dto.AsociarOrganizacionRequestDTO;
 import com.ticketti.ms_donaciones.dto.CausaSocialRequestDTO;
 import com.ticketti.ms_donaciones.dto.CausaSocialResponseDTO;
 import com.ticketti.ms_donaciones.enums.EstadoCausaSocial;
@@ -129,6 +130,23 @@ public class CausaSocialService {
         }
 
         causa.setEstado(EstadoCausaSocial.ACTIVA);
+        return CausaSocialResponseDTO.desdeModelo(causaSocialRepository.save(causa));
+    }
+
+    /**
+     * Asocia (o reasigna) la organización de una causa social. Necesario
+     * para las causas creadas por el organizador sin organización: sin
+     * este paso nunca aparecen en {@link #listarActivas} porque no hay
+     * cuenta bancaria a donde depositar las donaciones.
+     */
+    public CausaSocialResponseDTO asociarOrganizacion(Long id, AsociarOrganizacionRequestDTO dto) {
+        CausaSocialModel causa = buscarPorId(id);
+        OrganizacionModel org = organizacionRepository
+                .findById(dto.getIdOrganizacion())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Organización", dto.getIdOrganizacion()));
+
+        causa.setOrganizacion(org);
         return CausaSocialResponseDTO.desdeModelo(causaSocialRepository.save(causa));
     }
 }
