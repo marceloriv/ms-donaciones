@@ -114,9 +114,11 @@ public class CausaSocialService {
     }
 
     /**
-     * El admin activa la causa tras revisar el documento de respaldo
-     * recibido por correo. Solo procede si ya está PENDIENTE y el
-     * organizador ya envió el documento.
+     * El admin activa la causa. La validación del documento de respaldo es
+     * un proceso humano (el admin revisa el correo recibido y luego llama
+     * este endpoint) — no se bloquea en código por documentoEnviado, porque
+     * esto también lo usa el admin para activar causas que él mismo creó
+     * directamente (sin documento, sin organizador de por medio).
      */
     public CausaSocialResponseDTO activar(Long id) {
         CausaSocialModel causa = buscarPorId(id);
@@ -124,10 +126,6 @@ public class CausaSocialService {
         if (causa.getEstado() != EstadoCausaSocial.PENDIENTE) {
             throw new BusinessException(
                     "La causa no está en estado PENDIENTE. Estado actual: " + causa.getEstado());
-        }
-        if (!causa.isDocumentoEnviado()) {
-            throw new BusinessException(
-                    "La causa no tiene documento de respaldo enviado para validar");
         }
 
         causa.setEstado(EstadoCausaSocial.ACTIVA);
