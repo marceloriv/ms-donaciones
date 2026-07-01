@@ -3,6 +3,12 @@ package com.ticketti.ms_donaciones;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ticketti.ms_donaciones.client.MensajeriaClient;
 import com.ticketti.ms_donaciones.dto.AsociarOrganizacionRequestDTO;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import com.ticketti.ms_donaciones.dto.CausaSocialRequestDTO;
 import com.ticketti.ms_donaciones.dto.OrganizacionRequestDTO;
 import com.ticketti.ms_donaciones.repository.CausaSocialRepository;
@@ -27,7 +33,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        // Permite que RabbitTestConfig (interna) sobreescriba rabbitListenerContainerFactory
+        // de RabbitMQConfig. Necesario para desactivar el auto-start de listeners
+        // sin un broker disponible en el entorno de tests.
+        "spring.main.allow-bean-definition-overriding=true"
+})
 @WebAppConfiguration
 @Transactional
 class MsDonacionesIntegrationTest {
@@ -52,6 +63,26 @@ class MsDonacionesIntegrationTest {
 
     @MockitoBean
     private RabbitTemplate rabbitTemplate;
+
+    /**
+     * Reemplaza la rabbitListenerContainerFactory de RabbitMQConfig por una
+     * que NO hace auto-start: los @RabbitListener quedan registrados pero los
+     * contenedores nunca intentan conectarse al broker en tiempo de test.
+     */
+    @TestConfiguration
+    static class RabbitTestConfig {
+        @Bean
+        @Primary
+        SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+                ConnectionFactory connectionFactory,
+                Jackson2JsonMessageConverter messageConverter) {
+            SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+            factory.setConnectionFactory(connectionFactory);
+            factory.setMessageConverter(messageConverter);
+            factory.setAutoStartup(false);
+            return factory;
+        }
+    }
 
     @BeforeEach
     void setUp() {
